@@ -1,828 +1,668 @@
-web_server:
-  bind: 0.0.0.0
-  port: 5050
-  web_ui: yes
-
+# Original Available from: (https://github.com/jawilson/dotfiles) - Great work
+# This is a edited and modded version
+# Use the secrets plugin to separately store credentials, etc
 variables: secrets.yml
 
-schedules:
-  - tasks: ['populate-*', 'clean-*', 'update-*']
-    schedule:
-      hour: 0
-  - tasks: ['*-rss']
-    schedule:
-      minute: 0,30
-  - tasks: ['*-nextep','fill-*','*-discover', '*-manual']
-    schedule:
-      hour: '*/2'
-  - tasks: ['move-*', download-subtitles]
-    schedule:
-      minute: 15,45
+web_server: yes
 
 templates:
-
-##### Series config
-#
-  series:
-    thetvdb_lookup: yes
-    tvmaze_lookup: yes
-    include: doc_series.yml
-    configure_series:
-      from:
-        entry_list: trakt-doc_series
-      settings:
-        identified_by: ep
-        # timeframe: 16 hours
-        # target: hdtv+ 720p !10bit !h265
-        quality: webrip+ 720p !10bit !h265
-        # propers: 16 hours
-        specials: no
-        season_packs: no
-    content_size:
-      min: 200
-      max: 8000
-      strict: no
-    content_filter:
-      require:
-        - '*.mkv'
-        - '*.m4v'
-        - '*.avi'
-        - '*.mp4'
-      reject:
-        - '*.m2ts'
-        - 'password.txt'
-        - '*.wmv'
-
-        
-##### Documentary series config
-#
-  documentary_collections:
-    # include: doc_collections.yml
-    thetvdb_lookup: yes
-    # quality: 720p+ webdl+ !10bit !h265
-    content_size:
-      min: 200
-      max: 8000
-      strict: no
-    content_filter:
-      require:
-        - '*.mkv'
-        - '*.m4v'
-        - '*.avi'
-        - '*.mp4'
-      reject:
-        - '*.m2ts'
-        - 'password.txt'
-        - '*.wmv'
-
-  # doc_collections-series:
-    # # include: doc_collections.yml
-    # thetvdb_lookup: yes
-    # discover:
-      # what:
-        # - trakt_list:
-            # account: "{? trakt.account ?}"
-            # list: "{? trakt.doc_collections ?}"
-            # type: shows
-            # strip_dates: yes
-      # from:
-        # - search_rss:
-            # url: "{? rssfeeds.mvgroup01 ?}"
-            # all_entries: yes
-        # - search_rss:
-            # url: "{? rssfeeds.mvgroup02 ?}"
-            # all_entries: yes
-        # - search_rss:
-            # url: "{? rssfeeds.eztv ?}"
-        # - search_rss:
-            # url: "{? rssfeeds.rarbg ?}"
-        # - search_rss:
-            # url: "{? rssfeeds.limetorrents ?}"
-        # - search_rss:
-            # url: "{? rssfeeds.doctorrents ?}"
-        # - search_rss:
-            # url: "{? rssfeeds.zooqle.url ?}"
-            # title: "{? rssfeeds.zooqle.title ?}"
-    # manipulate:
-      # - title:
-          # replace:            
-            # regexp: 'BBC'
-            # format: ''
-    # quality: 720p+
-    # content_size:
-      # min: 200
-      # max: 8000
-      # strict: no
-    # content_filter:
-      # require:
-        # - '*.mkv'
-        # - '*.m4v'
-        # - '*.avi'
-        # - '*.mp4'
-      # reject:
-        # - '*.m2ts'
-        # - 'password.txt'
-        # - '*.wmv'    
-
-##### Movies config
-#
-  movies-1080p:
-    tmdb_lookup: yes
-    movie_list: trakt-movies
-    quality: 1080p webdl+ !10bit !h265
-    content_size:
-      min: 1000
-      max: 6000
-
-  movies-720p:
-    tmdb_lookup: yes
-    movie_list: trakt-movies
-    quality: 720p webdl+ !10bit !h265
-    content_size:
-      min: 500
-      max: 3000
-
-##### Transmission config
-#
-  transmission-anchors:
-    _transmission-settings: &transmission-settings
-      host: "{? transmission.host ?}"
-      port: 9091
-      username: "{? transmission.user ?}"
-      password: "{? transmission.pass ?}"
-
-##### Common rejections
-#
-  reject:
+  global:
+    deluge:
+      username: '{? deluge.username ?}'
+      password: '{? deluge.password ?}'
+      main_file_only: yes # Ignore all but the file that is >90% of the torrent if it exists
+      keep_subs: yes
+      host: '{? deluge.host ?}'
+      port: '{? deluge.port ?}'
+    # Make there's 50GB free before adding more downloads
+    free_space:
+      path: '{? storage.documentary ?}'
+      space: 50000
+    # Make sure all filenames are Windows safe (for samba)
+    pathscrub: windows
+    # Limit the frequency of requests to domains so they don't complain about
+    # using a bot
+    domain_delay:
+      bt-chat.com: 5 seconds
+      thexem.de: 10 seconds
+    # TorrentLeech uses cloudflare anti-bot measures, bypass those
+    cfscraper: yes
+  global-filter:
+    # Most of these are the results of problem torrents I kept seeing still pop up, so I wholesale blocked them
+    # RegExr (http://www.gskinner.com/RegExr/) is a great tool for testing regexes
     regexp:
       reject:
-        - (s|d)ub(s|bed)?\b: {from: title} 
-        - (duo|tri|quadri|tetra|penta|hexa|hepta|octa|ennea|deca)logy 
-        - \b3-?D\b: {from: title}          
-        - \bR5\b: {from: title}            
-        - \bWEBSCR\b: {from: title}        
+        - (s|d)ub(s|bed)?\b: {from: title}                    # Block any subbed/dubbed/etc videos
+        - \bR5\b: {from: title}                               # The following are poor quality types that somehow got through the quality
+        - \bWEBSCR\b: {from: title}                           # features usually due to the title including a keyword like "720p" as well
         - \bscreener\b: {from: title}
         - \bTS\b: {from: title}
-        - \bCam\b: {from: title} 
-        - "{C_P}": {from: title}
-        - \bFRENCH\b: {from: title}
-        - \bSPANiSH\b: {from: title}
-        - \bGerman\b: {from: title}
-        - \btrailer\b: {from: title}
-        - \bSCR\b: {from: title}
+        - \bCam\b: {from: title}
+        - '{C_P}': {from: title}                              # The following are groups with poor quality releases
         - TrTd TeaM: {from: title}
         - \[TNTVillage\]: {from: title}
         - \[facepalm\]: {from: title}
         - \bASAP\b: {from: title}
-        - \MULTi: {from: title}
-        - \bCasStudio\b: {from: title}
+        - the.day.of.the.doctor                               # The following are titles that caused me issues from plugins
+    # Require at least 10 seeds of any torrent
+    torrent_alive:
+      min_seeds: 10
+      reject_for: 1 day
+    # Filter by filenames. Allow multiple video types and rar packs (but note if there is just a
+    # single .rar file it won't be accepted)
     content_filter:
       require:
-        - '*.mkv'
-        - '*.m4v'
         - '*.avi'
+        - '*.mkv'
+        - '*.mpg'
         - '*.mp4'
+        - '*.r0*'
+        - '*.part0*'
       reject:
-        - '*.m2ts'
         - 'password.txt'
         - '*.wmv'
-
-
-##### ADVANCED SETTINGS #####
-
-##### Global config
-#
-  global:
-    no_entries_ok: yes
-    pathscrub: windows
-    free_space:
-      path: "/{? folder.root ?}"
-      space: 5000
-    # Requires log_filter plugin
-    log_filter:
-      task:
-        - marked seen
-        - already downloaded
-        - already been downloaded
-        - Task does not have any
-        - Task doesn't have any
-        - is before begin value
-      move:
-        - left because it exceeds safety value
-        - does not exists (anymore)
-      urlrewriter:
-        - URL rewritten to
-      enzyme.mkv:
-        - Reading
-        - Processing
-      enzyme.parsers.ebml.core:
-        - ignored
-        - Maximum level
-      subliminal.video:
-        - Scanning video
-      parser_internal:
-        - appears to be an episode pack
-      content_size:
-        - rejecting
-      search_rss:
-        - Error
-      assume_quality:
-        - ""
-      utils.requests:
-        - Waiting
-      manipulate:
-        - Field `title` is now
-      filesystem:
-        - Starting to scan
-
-##### Common torrents config
-#
-  torrents:
-    torrent_alive:
-      min_seeds: 3
-      reject_for: 15 minutes
+    reorder_quality:
+      webdl:
+        above: dvdrip
+    # Size and seed restrictions require real torrents
+    rewrite_magnet:
+      scrape: yes
     magnets: no
-    # Might need to disable if you are getting errors connecting to https sources
-    # Can remove if you upgrade to python 2.7.9+ or install requests[security]
-    #verify_ssl_certificates: no
-    domain_delay:
-      thepiratebay.se: 10 seconds
-      thepiratebay.org: 10 seconds
-      limetorrents: 3 seconds
+    sort_by:
+      - field: quality
+        reverse: yes
+      - field: torrent_availability
+        reverse: yes
 
-##### Transmission doc_collection-series config
-#
-  transmission-doc_collection:
-    transmission:
-      <<: *transmission-settings
-      main_file_only: yes
-      include_subs: yes
-      rename_like_files: yes
-      content_filename: "{{tvdb_ep_name|pathscrub}}{% endif %}{% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      path: "/{? folder.root ?}{? folder.downdoc_collections ?}{{tvdb_series_name|default(series_name)|pathscrub}}/"
+  tv-anchors:
+    _tv_trakt_list_tv_shows: &tv-trakt-list-tv-shows
+      account: '{? trakt.account ?}'
+      list: TV Shows
+      strip_dates: yes
+    _tv_trakt_list_tv_shows_missing: &tv-trakt-list-tv-shows-missing
+      account: '{? trakt.account ?}'
+      list: Missing Episodes
+      strip_dates: yes
+    _tv_series: &tv-series
+      include:
+        - series.yml
+      sequence:
+        - configure_series: &tv-series-from
+            from:
+              trakt_list:
+                <<: *tv-trakt-list-tv-shows
+                type: shows
+    _tv_discover_from: &tv-discover-from
+      from:
+        - flexget_archive: [tv]
+        - rarbg:
+            category: [41, 49]
+            use_tvdb: true
+            min_seeders: 10
+        - piratebay:
+            category: 'highres tv'
+        - piratebay:
+            category: 'tv'
 
-##### Transmission series config
-#
-  transmission-series:
-    transmission:
-      <<: *transmission-settings
-      main_file_only: yes
-      include_subs: yes
-      rename_like_files: yes
-      content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %} - {{tvdb_ep_name|pathscrub}}{% endif %}{% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      path: "/{? folder.root ?}{? folder.downdoc_series ?}{{tvdb_series_name|default(series_name)|pathscrub}}/"
+  tv-trakt-follow:
+    disable:
+      - seen
+    accept_all: yes
+    no_entries_ok: yes
+    set_series_begin: yes
 
-##### Transmission movies config
-#
-  transmission-movies:
-    transmission:
-      <<: *transmission-settings
-      main_file_only: yes
-      include_subs: yes
-      rename_like_files: yes
-      content_filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      path: "/{? folder.root ?}{? folder.downmovies ?}{{movie_name|pathscrub}}"
+  tv-filter:
+    <<: *tv-series
+    template: [global-filter]
+    timeframe:
+      target: 720p+ webrip+
+      wait: 3 days
+    quality: 480p+ webrip+
+    sequence:
+      - configure_series:
+          <<: *tv-series-from
+          settings:
+            tracking: backfill
+            season_packs: yes
+    # Impose reasonable size constraints
+    if:
+      - season_pack:
+          content_size:
+            min: 200
+      - not season_pack:
+          content_size:
+            max: 10000
+            min: 40
+    # Prevent from downloading shows that were aquired manually
+    # or are currently downloading
+    exists_series:
+      - "{? storage.documentary ?}/series/{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '')|pathscrub('windows') }}"
+#      - '{? storage.documentary ?}/staging/tv_shows'
+#      - '{? storage.downloads ?}'/complete/flexget/series
 
-##### Disable builtins for some tasks
-#
-  disable-seen-retry:
+
+  tv-global:
+    # Look up info on TheTVDB.com to fill in extra info
+    thetvdb_lookup: yes
+    trakt_lookup: yes
+    metainfo_series: yes
+    require_field: [series_name, series_id]
+    sequence:
+      - configure_series:
+          settings:
+            set:
+              move_completed_path: >-
+                {? storage.documentary ?}/series/{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }}/{% if series_id_type == 'ep' %}Season {{ series_season }}/{% endif %}
+          from:
+            trakt_list:
+              <<: *tv-trakt-list-tv-shows
+              type: shows
+    set:
+      queuetotop: yes
+      # Rename the "content file" to something nice, use leading slash to force file to top level
+      content_filename: >-
+        /{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}
+    # This is a custom plugin, it is part of my rar-unpacking method,
+    # it changes 'move_completed_path' based on the regexp in the key
+    content_sort:
+      '*.rar': '{? storage.downloads ?}/complete/flexget/series/'
+
+
+  movie-anchors:
+    _movie_trakt_list_movies: &movie-trakt-list-movies
+      account: '{? trakt.account ?}'
+      type: movies
+    _movie_trakt_list_movie_queue: &movie-trakt-list-movie-queue
+      <<: *movie-trakt-list-movies
+      list: Movie Queue
+
+  movies-filter:
+    template: [global-filter]
+    # Some feeds might include TV Shows, ignore them
+    if:
+      - "has_field('category')":
+          regexp:
+            reject_excluding:
+              - '^(DVDRip.DVDScreener|DVD-R|WEBRip|HDRip|Bluray(Rip)?|4K Upscaled.UHD LQ|Real 4K UltraHD HDR|Documentaries)$': {from: category}
+    regexp:
+      reject:
+        - \b(duo|tri|quadri|tetra|penta)logy\b: {from: title} # Block series, only accept one at a time
+        - \btrailer\b: {from: title}                          # I've gotten a few trailers that matched as movies. VERY annoying
+        - s\d+e\d+: {from: title}
+        - '\d{4}.\d{2}.\d{2}': {from: title}
+        - \d+x\d+: {from: title}
+        - \baac2: {from: title} # No 2 channel audio
+    upgrade:
+      tracking: yes
+    timeframe:
+      target: 1080p+ bluray+ h265+ !ac3
+      wait: 28 days
+      on_reached: do_nothing
+    quality: 720p+ dvdrip+ h264+ !mp3 !aac
+    # Impose reasonable size constraints
+    content_size:
+      max: 20000
+      min: 1000
+    # Check for already downloaded or currently downloading movies
+    require_field: [imdb_name, imdb_year]
+    exists_movie:
+      - "{? storage.documentary ?}/movies/{{ imdb_name|replace('/', '_')|replace(':', ' -')|replace(',', '')|pathscrub('windows') }} ({{ imdb_year }})"
+#      - '{? storage.documentary ?}/staging/movies'
+#      - '{? storage.downloads ?}'/complete/flexget/movies
+
+  movies-global:
+    imdb_lookup: yes
+    trakt_lookup: yes
+    # Download propers, since they will have the same content_filename,
+    # lower/non-propers will be overwritten
+    proper_movies: yes
+    set:
+      # Give folders/files nice names
+      move_completed_path: "{? storage.documentary ?}/movies/{{ imdb_name|default(movie_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} ({{ imdb_year|default(movie_year) }})"
+      # Rename the "content file" to something nice, use leading slash to force file to top level
+      content_filename: >-
+        /{{ imdb_name|default(movie_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} ({{ imdb_year|default(movie_year) }}) - {{ quality }}{% if extras|default(False) %} 3d half-{{ extras|lower }}{% endif %}
+    # This is a custom plugin, it is part of my rar-unpacking method, it changes
+    # 'move_completed_path' based on the regexp in the key
+    content_sort:
+      '*.rar': '{? storage.downloads ?}/complete/flexget/movies/'
+    list_remove:
+      - trakt_list:
+          <<: *movie-trakt-list-movie-queue
+    list_add:
+      - trakt_list:
+          <<: *movie-trakt-list-movies
+          list: watchlist
+
+
+  local-torrents:
+    disable:
+      - retry_failed
+      - seen
+      - seen_info_hash
+    no_entries_ok: yes
+    accept_all: yes
+    exec:
+      on_exit:
+        for_accepted: rm "{{location}}"
+
+  sorting:
+    # Each feed must be run manually
+    manual: yes
+    # Disable seen, alway process files
+    disable: [seen, remember_rejected, retry_failed]
+    accept_all: yes
+    no_entries_ok: yes
+    # Make sure all filenames are Windows safe (for samba)
+    pathscrub: windows
+    filesystem:
+      path: '/tmp'
+      # We are looking for any video files that were extracted
+      regexp: '.*\.(avi|mkv|mpg|mp4|m4v)$'
+      recursive: yes
+    regexp:
+      reject:
+        - \bsample\b: {from: title}
+    content_size:
+      min: 52
+
+
+# This is where we pull everything together
+tasks:
+
+  # Use a local folder (synced with Dropbox) as a source
+  # I can drop torrents in this folder and they are synced with Dropbox, always
+  # accepted, then the original file is deleted
+  Local-Torrents-TV:
+    priority: 1
+    <<: *tv-series
+    template:
+      - local-torrents
+      - tv-global
+    all_series:
+      parse_only: yes
+      assume_special: yes
+      season_packs: yes
+    sequence:
+      - configure_series:
+          <<: *tv-series-from
+          settings:
+            parse_only: yes
+    filesystem:
+      path: '/home/media/Dropbox/torrents/series'
+      recursive: yes
+      retrieve: files
+      regexp: '.*\.torrent$'
+    series_add: yes
+    set:
+      label: local-tv
+
+
+  # Same as above but for movies
+  Local-Torrents-Movies:
+    priority: 2
+    template:
+      - local-torrents
+      - movies-global
+    filesystem:
+      path: '/home/media/Dropbox/torrents/movies'
+      recursive: yes
+      retrieve: files
+      regexp: '.*\.torrent$'
+    set:
+      label: local-movies
+
+
+  # flexget exec --tasks 'Sync-TV-Shows' --disable-tracking --learn
+  Sync-TV-Shows:
+    manual: yes
+    template:
+      - no_global # None of the global templates make sense here
     disable:
       - seen
       - seen_info_hash
-      - retry_failed
-
-##### Series metainfo mainly for move and update tasks
-#
-  series-metainfo:
-    metainfo_series: yes
-    thetvdb_lookup: yes
-
-##### Guessit parsing for some series tasks and anime, not applied to all tasks because it used to cause issues with some series
-#
-  series-guessit:
-    parsing:
-      series: guessit
-
-##### Movies metainfo mainly for move and update tasks
-#
-  movies-metainfo:
-    tmdb_lookup: yes
-    parsing:
-      movie: guessit
-
-##### Guessit parsing for anime movies task
-#
-  movies-guessit:
-    parsing:
-      movie: guessit
-
-tasks:
-########## COLLECTIONS ##########
-
-##### trakt to entry_list
-  populate_entry_lists:
-    priority: 1
-    disable: seen
-    trakt_list:
-      account: "{? trakt.account ?}"
-      list: "{? trakt.doc_collections ?}"
-      type: shows
-      strip_dates: yes
-      strip_dates: yes
-    thetvdb_lookup: yes
-    metainfo_series: yes
-    # require_field:
-      # - tvdb_ep_name
-      # - tvdb_ep_air_date
-      # - tvdb_series_name     
-    set:
-      title: '{{tvdb_series_name}}'
-    list_add:
-      - entry_list: doc_collections_list
-    accept_all: yes
-
-##### entry_list to regexp_list
-  populate_regexp_list:
-    priority: 2
-    disable: seen
-    entry_list: doc_collections_list
-    list_add:
-      - regexp_list: doc_collections_list
-    manipulate:  # example: Game of Thrones becomes game.*of.*thrones.*s\d{2}e\d{2}
-      # - title:
-          # replace:
-            # regexp: 'BBC Documentaries'
-            # format: 'BBC'
-      # - title:
-          # replace:
-            # regexp: 'NHK Documentaries'
-            # format: 'NHK Documentary'
-      # - title:
-          # replace:
-            # regexp: '$'
-            # format: ' s\d{2}e\d{2}'
-      - title:
-          replace:
-            regexp: ' '
-            format: '.*'
-    accept_all: yes
-
-##### rss download
-  get_rss:
-    priority: 3
-    seen: local
-    template:
-      - documentary_collections
-      - transmission-doc_collection
-    rss:
-      url: "{? rssfeeds.mvgroup01 ?}"
-    list_match:
-      from:
-        - regexp_list: doc_collections_list
-      remove_on_match: no
-      single_match: no
-    require_field:
-      - tvdb_ep_name
-    parsing:
-      movie: guessit
-      series: guessit
-    manipulate:
-      - title:
-          replace:
-            regexp: 'BBC -'
-            format: ''
-    thetvdb_lookup: yes
-    metainfo_series: yes
-
-########## SERIES ##########
-
-##### Populates the series database with the files on the library, to avoid duplicate downloads
-#
-  populate-series-db:
-    priority: 20
-    template:
-      - series-metainfo
-    seen: local
+      - nzb_size
+      - urlrewriting
     filesystem:
-      path: "/{? folder.root ?}{? folder.doc_series ?}"
+      path:
+        - '{? storage.documentary ?}/series'
       recursive: yes
       retrieve: files
-      regexp: '.*\.(avi|mkv|mp4)$'
-    accept_all: yes
-    configure_series:
-      from:
-        filesystem:
-          path: "/{? folder.root ?}{? folder.doc_series ?}"
-          retrieve: dirs
-      settings:
-        tracking: no
-
-##### Fetches the next unwatched episode from the series watchlist and adds it to a custom entry list
-#
-  get-series-nextep:
-    priority: 21
-    template:
-      - disable-seen-retry
-      - series-metainfo
-    list_clear:
-      what:
-        - entry_list: trakt-doc_series-begin
-    next_trakt_episodes:
-      account: "{? trakt.account ?}"
-      list: "{? trakt.doc_series ?}"
-      strip_dates: yes
-      context: watched
-      position: next
-    accept_all: yes
-    list_add:
-      - entry_list: trakt-doc_series-begin
-
-##### Formats the output of the previous task to tvdb format and sets the begin episode for the series
-#
-  set-series-nextep:
-    priority: 22
-    template:
-      - disable-seen-retry
-      - series-metainfo
-    entry_list: trakt-doc_series-begin
-    accept_all: yes
-    set:
-      series_name: "{{tvdb_series_name|escape|replace('&#39;', '')}}"
-    set_series_begin: yes
-
-
-##### Fetch, format and output trakt series list to a custom entry list
-#
-  fill-series-list:
-    priority: 23
-    template:
-      - disable-seen-retry
-      - series-metainfo
-    list_clear:
-      what:
-        - entry_list: trakt-doc_series
-    trakt_list:
-      account: "{? trakt.account ?}"
-      list: "{? trakt.doc_series ?}"
-      type: shows
-      strip_dates: yes
-    accept_all: yes
-    set:
-      title: "{{tvdb_series_name|escape|replace('&#39;', '')}}"
-    list_add:
-      - entry_list: trakt-doc_series
-
-
-##### Download episodes from manually downloaded torrents
-#
-  download-series-manual:
-    priority: 24
-    template:
-      - disable-seen-retry
-      - series-metainfo
-      - series-guessit
-      - transmission-series
-    filesystem:
-      path: "/{? folder.root ?}{? folder.downdoc_series ?}"
-      mask: '*.torrent'
-    accept_all: yes
-    exec:
-      on_output:
-        for_accepted: rm -f "{{location}}"
-
-
-##### Download episodes from RSS feeds
-#
-  download-series-rss:
-    priority: 25
-    template:
-      - series
-      - reject
-      - torrents
-      - transmission-series
-    inputs:
-     - rss:
-         url: "{? rssfeeds.mvgroup01 ?}"
-     - rss:
-         url: "{? rssfeeds.eztv ?}"
-     - rss:
-         url: "{? rssfeeds.rarbg ?}"
-     - rss:
-         url: "{? rssfeeds.limetorrents ?}"
-     - rss:
-         url: "{? rssfeeds.doctorrents ?}"
-     - rss:
-         url: "{? rssfeeds.zooqle.url ?}"
-         title: "{? rssfeeds.zooqle.title ?}"
-
-##### Discover and download season packs
-#
-  download-seasons-discover:
-    priority: 26
-    template:
-      - series
-      - reject
-      - torrents
-      - transmission-series
-    #thetvdb does not support season lookups yet
-    thetvdb_lookup: no
-    magnets: yes
-    convert_magnet:
-      timeout: 10 seconds
-      force: yes
-    discover:
-      release_estimations: strict
-      interval: 15 minutes
-      what:
-        - next_series_seasons:
-            from_start: yes
-      from:
-        - piratebay:
-            category: highres tv
-        - limetorrents:
-            category: tv
-
-
-##### Discover and download older episodes and pilots from recently added series
-#
-  download-series-discover:
-    priority: 27
-    template:
-      - series
-      - reject
-      - torrents
-      - transmission-series
-    magnets: yes
-    convert_magnet:
-      timeout: 10 seconds
-      force: yes
-    discover:
-      release_estimations: strict
-      interval: 15 minutes
-      what:
-        - next_series_episodes:
-            from_start: yes
-      from:
-        - piratebay:
-            category: highres tv
-        - limetorrents:
-            category: tv
-
-########## MOVIES ##########
-
-##### Remove manually downloaded movies from the movie queue and trakt list
-#
-  clean-movies-queue:
-    priority: 31
-    template:
-      - disable-seen-retry
-      - movies-metainfo
-    filesystem:
-      path: "/{? folder.root ?}{? folder.movies ?}"
-      recursive: yes
-      retrieve: files
-      regexp: '.*\.(avi|mkv|mp4)$'
-    accept_all: yes
-    list_remove:
-      - movie_list: trakt-movies
-      - trakt_list:
-          account: "{? trakt.account ?}"
-          list: "{? trakt.movies ?}"
-          type: movies
-
-
-##### Fill the movie queue with movies from trakt list
-#
-  fill-movies-queue:
-    priority: 32
-    trakt_list:
-      account: "{? trakt.account ?}"
-      list: "{? trakt.movies ?}"
-      type: movies
-      strip_dates: yes
-    accept_all: yes
-    list_add:
-      - movie_list: trakt-movies
-
-
-##### Download movies manually downloaded torrents
-#
-  download-movies-manual:
-    priority: 34
-    template:
-      - disable-seen-retry
-      - movies-metainfo
-      - transmission-movies
-    filesystem:
-      path: "/{? folder.root ?}{? folder.downmovies ?}"
-      mask: '*.torrent'
-    accept_all: yes
-    exec:
-      on_output:
-        for_accepted: rm -f "{{location}}"
-    list_remove:
-      - movie_list: trakt-movies
-      - trakt_list:
-          account: "{? trakt.account ?}"
-          list: "{? trakt.movies ?}"
-          type: movies
-
-
-##### Discover and download 1080p movies
-#
-  download-movies-1080p-discover:
-    priority: 37
-    template:
-      - movies-1080p
-      - reject
-      - torrents
-      - transmission-movies
-    exists_movie:
-      - "/{? folder.root ?}{? folder.downmovies ?}"
-      - "/{? folder.root ?}{? folder.movies ?}"
-    magnets: yes
-    convert_magnet:
-      timeout: 10 seconds
-      force: yes
-    discover:
-      release_estimations: loose
-      interval: 15 minutes
-      what:
-        - movie_list: trakt-movies
-      from:
-        - piratebay:
-            category: highres movies
-        - limetorrents:
-            category: movies
-    list_match:
-      from:
-        - movie_list: trakt-movies
-    list_remove:
-      - trakt_list:
-          account: "{? trakt.account ?}"
-          list: "{? trakt.movies ?}"
-          type: movies
-
-
-##### Discover and download 720p movies, if the movie is not recent
-#
-  download-movies-720p-discover:
-    priority: 38
-    template:
-      - movies-720p
-      - reject
-      - torrents
-      - transmission-movies
-    exists_movie:
-      - "/{? folder.root ?}{? folder.downmovies ?}"
-      - "/{? folder.root ?}{? folder.movies ?}"
-    magnets: yes
-    convert_magnet:
-      timeout: 10 seconds
-      force: yes
-    discover:
-      release_estimations: loose
-      interval: 15 minutes
-      what:
-        - movie_list: trakt-movies
-      from:
-        - piratebay:
-            category: highres movies
-        - limetorrents:
-            category: movies
-    if:
-      - tmdb_year > now.year - 1: reject
-    list_match:
-      from:
-        - movie_list: trakt-movies
-    list_remove:
-      - trakt_list:
-          account: "{? trakt.account ?}"
-          list: "{? trakt.movies ?}"
-          type: movies
-
-
-########## LIBRARY ##########
-
-##### Move series from downloads folder to respective folders, along with existing subtitles and adding the files to the subtitle queue
-#
-  move-series:
-    priority: 41
-    template:
-      - disable-seen-retry
-      - series-metainfo
-      - series-guessit
-    filesystem:
-      path: "/{? folder.root ?}{? folder.downseries ?}"
-      recursive: yes
-      retrieve: files
-      regexp: '.*\.(avi|mkv|mp4)$'
-    accept_all: yes
-    move:
-      to: "/{? folder.root ?}{? folder.series ?}{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/"
-      rename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %} - {{tvdb_ep_name|pathscrub}}{% endif %}{% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      along:
-        extensions:
-          - srt
-          - sub
-        subdirs:
-          - Subs
-      clean_source: 50
-    exec:
-      on_exit:
-        phase: find "/{? folder.root ?}{? folder.downseries ?}"* -type d -delete
-
-
-##### Move movies from downloads folder to the movies folder, along with possible subtitles and adding the files to the subtitle queue
-#
-  move-movies:
-    priority: 43
-    template:
-      - disable-seen-retry
-      - movies-metainfo
-    filesystem:
-      path: "/{? folder.root ?}{? folder.downmovies ?}"
-      recursive: yes
-      retrieve: files
-      regexp: '.*\.(avi|mkv|mp4)$'
-    accept_all: yes
+      regexp: '.*\.(avi|mkv|mp4|mpg|m4v|ts)$'
     regexp:
       reject:
-        - \btrailer\b
-        - \bsample\b
-    move:
-      to: "/{? folder.root ?}{? folder.movies ?}"
-      rename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %} - [{{quality}}]{% endif %}"
-      along:
-        extensions:
-          - srt
-          - sub
-        subdirs:
-          - Subs
-      clean_source: 100
-    exec:
-      on_exit:
-        phase: find "/{? folder.root ?}{? folder.downmovies ?}"* -type d -delete
-
-##### Clean finished torrents from transmission
-#
-  clean-transmission:
-    priority: 47
-    disable: details
-    clean_transmission:
-      <<: *transmission-settings
-      finished_for: 1 day
+        - \bsample\b: {from: title}
+    <<: *tv-series
+    sequence:
+      - configure_series:
+          <<: *tv-series-from
+          settings:
+            tracking: backfill
+            upgrade: yes
 
 
-########## UPDATES ##########
-
-##### Update trakt series list from local series folders, excluding the ones that already ended
-#
-  update-series-list:
-    priority: 51
-    template:
-      - disable-seen-retry
-      - series-metainfo
-    filesystem:
-      path: "/{? folder.root ?}{? folder.series ?}"
-      retrieve: dirs
-    manipulate:
-      - title:
-          replace:
-            regexp: '$'
-            format: 'S01E01'
+  Sync-Trakt-Shows-Deleted:
+    priority: 10
+    template: no_global
+    seen: no
+    inputs:
+      - next_trakt_episodes:
+          <<: *tv-trakt-list-tv-shows
+          context: collected
+          position: next
+    all_series:
+      tracking: no
+      parse_only: yes
     accept_all: yes
-    if:
-      - tvdb_status == 'Ended': reject
-    list_add:
-      - trakt_list:
-          account: "{? trakt.account ?}"
-          list: "{? trakt.series ?}"
-          type: shows
+    exists_series:
+      - "{? storage.documentary ?}/series"
+    series_remove: yes
+    run_task:
+      when: accepted
+      task:
+        - Series-Decompress-Deleted
+        - My-TV-Shows-Deleted
 
 
-##### Clean the series that already ended from trakt series list
-#
-  clean-series-list:
-    priority: 53
-    delay: 8 day
+  Series-Decompress-Deleted:
+    manual: yes
+    priority: 15
     template:
-      - disable-seen-retry
-      - series-metainfo
-      - pushbullet
+      - no_global # None of the global templates make sense here
+      - tv-global
+    seen: no
+    filesystem:
+      path: '{? storage.downloads ?}/complete/flexget/series/'
+      recursive: yes
+      regexp: '.*\.(rar|r0[01]?|zip)$'
+    archives: yes
+    exists_series:
+      - "{? storage.documentary ?}/series"
+      - '{? storage.documentary ?}/staging/series'
+    <<: *tv-series
+    no_entries_ok: yes
+    decompress:
+      keep_dirs: no
+      delete_archive: no
+      to: '{? storage.documentary ?}/staging/series/{{title}}'
+      regexp: '.*\.(mkv|avi|mp4|mpg|mov|m4v)$'
+    run_task:
+      when: accepted
+      task: Series-Sort-Decompressed
+
+
+  My-TV-Shows-Deleted:
+    manual: yes
+    priority: 16
+    template:
+      - tv-global
+      - tv-filter
+    disable:
+      - seen
+      - seen_info_hash
+    discover:
+      interval: 2 hours
+      <<: *tv-discover-from
+      what:
+        - next_series_episodes:
+            backfill: yes
+            from_start: yes
+    archive: [tv]
+
+
+  Follow-Trakt-Shows:
+    priority: 20
+    template: [no_global,tv-trakt-follow]
     trakt_list:
-      account: "{? trakt.account ?}"
-      list: "{? trakt.series ?}"
-      type: shows
-    if:
-      - tvdb_status == 'Ended': accept
-    list_add:
-      - trakt_list:
-          account: "{? trakt.account ?}"
-          list: "{? trakt.ended ?}"
-          type: shows
+      <<: *tv-trakt-list-tv-shows
+      type: episodes
+      strip_dates: yes
     list_remove:
       - trakt_list:
-          account: "{? trakt.account ?}"
-          list: "{? trakt.series ?}"
+          <<: *tv-trakt-list-tv-shows
+          strip_dates: yes
+    list_add:
+      - trakt_list:
+          <<: *tv-trakt-list-tv-shows
           type: shows
+          strip_dates: yes
+
+
+  My-TV-Shows:
+    priority: 30
+    template:
+      - tv-global
+      - tv-filter
+    rss:
+      url: "{? rssfeeds.mvgroup01 ?}"
+      other_fields: [category]
+    if:
+      - "has_field('category')":
+          regexp:
+            reject_excluding:
+              - '^Episodes( HD)?$': {from: category}
+    discover:
+      interval: 2 hours
+      <<: *tv-discover-from
+      what:
+        - next_series_seasons:
+            backfill: yes
+            from_start: yes
+            threshold: 4
+        - next_series_episodes:
+            backfill: yes
+            from_start: yes
+    max_reruns: 2
+    archive: [tv]
+    set:
+      label: my-tv-shows
+    list_remove:
+      - trakt_list:
+          <<: *tv-trakt-list-tv-shows-missing
+          type: episodes
+
+
+  Monitor-Missing-Shows:
+    template:
+      - no_global # None of the global templates make sense here
+    seen: local
+    <<: *tv-series
+    sequence:
+      - configure_series:
+          <<: *tv-series-from
+          settings:
+            parse_only: yes
+    no_entries_ok: yes
+    next_series_episodes: yes
+    trakt_lookup: yes
+    require_field:
+      - trakt_ep_first_aired
+    if:
+      - trakt_ep_first_aired and trakt_ep_first_aired < now - timedelta(days=2): accept
+    max_reruns: 0
+    list_add:
+      - trakt_list:
+          <<: *tv-trakt-list-tv-shows-missing
+          type: episodes
+
+
+  # Cleans movies from the Trakt that we already have
+  Clean-Movie-Queue:
+    priority: 90
+    template: no_global
+    seen: no
+    filesystem:
+      path: '{? storage.documentary ?}/movies'
+      recursive: no
+      retrieve: dirs
+    imdb_lookup: yes
+    tmdb_lookup: yes
+    require_field: [movie_name, movie_year]
+    accept_all: yes
+    list_remove:
+      - trakt_list:
+          <<: *movie-trakt-list-movie-queue
+
+
+  # The next two tasks download the queue from the previous task effectively implementing
+  # a 2 day timeframe for 1080p movies, then falls back to 720p
+  My-Movies:
+    priority: 100
+    template:
+      - movies-global
+      - movies-filter
+    rss:
+      url: "{? rssfeeds.mvgroup01 ?}"
+      other_fields: [category]
+    discover:
+      release_estimations:
+        optimistic: 30 days
+      interval: 2 hours
+      what:
+        - trakt_list:
+            <<: *movie-trakt-list-movie-queue
+      from:
+        - flexget_archive: [movies]
+        - rarbg:
+            category: [44, 45, 47]
+            min_seeders: 10
+        - piratebay:
+            category: 'highres movies'
+        - piratebay:
+            category: 'movies'
+    archive: [movies]
+    set:
+      label: my-movies
+    list_match:
+      from:
+        - trakt_list:
+            <<: *movie-trakt-list-movie-queue
+      remove_on_match: no
+
+
+  Series-Decompress:
+    manual: yes
+    template:
+      - no_global # None of the global templates make sense here
+    filesystem:
+      path: '{? storage.downloads ?}/complete/flexget/series/'
+      recursive: yes
+      regexp: '.*\.(rar|r0[01]?|zip)$'
+    archives: yes
+    no_entries_ok: yes
+    decompress:
+      keep_dirs: no
+      delete_archive: no
+      to: '{? storage.documentary ?}/staging/series/{{title}}'
+      regexp: '.*\.(mkv|avi|mp4|mpg|mov|m4v)$'
+    run_task:
+      when: accepted
+      task: Series-Sort-Decompressed
+
+
+  Movies-Decompress:
+    manual: yes
+    template:
+      - no_global # None of the global templates make sense here
+    filesystem:
+      path: '{? storage.downloads ?}/complete/flexget/movies/'
+      recursive: yes
+      regexp: '.*\.(rar|r0[01]?|zip)$'
+    archives: yes
+    metainfo_movie: yes
+    no_entries_ok: yes
+    decompress:
+      keep_dirs: no
+      delete_archive: no
+      to: '{? storage.documentary ?}/staging/movies/{{movie_name}} ({{movie_year}})'
+      regexp: '.*\.(mkv|avi|mp4|mpg|mov|m4v)$'
+    run_task:
+      when: accepted
+      task: Movies-Sort-Decompressed
+
+
+  Series-Sort-Decompressed:
+    template:
+      - no_global # None of the global templates make sense here
+      - sorting
+    # Where to get the unpacked (staged) files from
+    filesystem:
+      path: '{? storage.documentary ?}/staging/series/'
+    # Where to get the metadata
+    thetvdb_lookup: yes
+    # This is needed to get my season offset values
+    <<: *tv-series
+    sequence:
+      - configure_series:
+          settings:
+            parse_only: yes
+            tracking: no
+            set:
+              move_to: >-
+                {? storage.documentary ?}/series/{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }}/{% if series_id_type == 'ep' %}Season {{ series_season }}/{% endif %}
+          from:
+            trakt_list:
+              <<: *tv-trakt-list-tv-shows
+              type: shows
+    all_series:
+      # Don't actually filter
+      parse_only: yes
+      tracking: no
+    accept_all: yes
+    # Don't attempt to move if we don't have valid metadata
+    require_field: [tvdb_series_name, series_id, move_to]
+    move:
+      rename: >
+        {{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}.{{ location[-3:] }}
+      clean_source: 40
+
+  # Same as above
+  Movies-Sort-Decompressed:
+    template:
+      - no_global # None of the global templates make sense here
+      - sorting
+    filesystem:
+      path: '{? storage.documentary ?}/staging/movies/'
+    imdb_lookup: yes
+    tmdb_lookup: yes
+    #rottentomatoes_lookup: yes
+    proper_movies: yes
+    move:
+      to: >
+        {? storage.documentary ?}/movies/{{ imdb_name|default(movie_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} ({{ imdb_year|default(movie_year) }})/
+      rename: >
+        {{ imdb_name|default(movie_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} ({{ imdb_year|default(movie_year) }}) - {{ quality }}{% if extras|default(False) %} 3d half-{{ extras|lower }}{% endif %}.{{ location[-3:] }}
+      clean_source: 1000
+
+schedules:
+
+  #
+  # Local
+  #
+  - tasks: [ 'Local-Torrents-*', 'Follow-Trakt-Shows*' ]
+    interval:
+      minutes: 20
+
+  #
+  # Series
+  #
+  - tasks: [ 'Sync-Trakt-Shows-Deleted' ]
+    schedule:
+      hour: 8
+  - tasks: [ 'My-TV-Shows' ]
+    schedule:
+      minute: 3,18,33,48
+  - tasks: [ 'Monitor-Missing-Shows' ]
+    interval:
+      hours: 1
+
+  #
+  # Movies
+  #
+  - tasks: [ 'My-Movies*' ]
+    interval:
+      hours: 1
+
+  - tasks: [ 'Clean-Movie-Queue' ]
+    interval:
+      weeks: 1
