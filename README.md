@@ -23,7 +23,7 @@ If you want you can now
 With the Proxmox web interface go to `typhoon-01` > `113 (deluge)` > `>_ Shell` and type the following:
 
 ```
-echo -e "#!/bin/sh -xu
+echo -e '#!/bin/sh -xu
 
 # Input Parameters & Folder Configuration
 SERIES_INPUT="/mnt/downloads/deluge/complete/flexget/series"
@@ -33,7 +33,7 @@ MOVIE_OUTPUT="/mnt/video/documentary/movies"
 
 filebot -script fn:amc --output "$SERIES_OUTPUT" --def "ut_label=series" --action copy --conflict override -non-strict --def artwork=n --def clean=y "ut_dir=$SERIES_INPUT" "ut_kind=multi" --def "seriesFormat=/mnt/video/documentary/series/{n}/{'S'+s.pad(2)}/{n.replaceAll(/[!?.]+$/).space('.')}.{'s'+s.pad(2)}e{e.pad(2)}.{vf}.{source}.{vc}.{ac}" -no-xattr --log-file "/home/media/.filebot/amc.log" --def reportError=y > /home/media/.filebot/output.txt 2>&1
 
-filebot -script fn:amc --output "$MOVIE_OUTPUT" --def "ut_label=movies" --action copy --conflict override -non-strict --def artwork=n --def clean=y "ut_dir=$MOVIE_INPUT" "ut_kind=multi" --def "movieFormat=/mnt/video/documentary/movies/{ny}/{n.upperInitial().replaceAll(/[!?.]+$/).space('.')}.{y}.{vf}.{source}.{vc}.{ac}" -no-xattr --log-file "/home/media/.filebot/amc.log" --def reportError=y > /home/media/.filebot/output.txt 2>&1" > /home/media/.config/deluge/deluge-postprocess.sh &&
+filebot -script fn:amc --output "$MOVIE_OUTPUT" --def "ut_label=movies" --action copy --conflict override -non-strict --def artwork=n --def clean=y "ut_dir=$MOVIE_INPUT" "ut_kind=multi" --def "movieFormat=/mnt/video/documentary/movies/{ny}/{n.upperInitial().replaceAll(/[!?.]+$/).space('.')}.{y}.{vf}.{source}.{vc}.{ac}" -no-xattr --log-file "/home/media/.filebot/amc.log" --def reportError=y > /home/media/.filebot/output.txt 2>&1' > /home/media/.config/deluge/deluge-postprocess.sh &&
 chmod +rx /home/media/.config/deluge/deluge-postprocess.sh &&
 chown 1005:1005 /home/media/.config/deluge/deluge-postprocess.sh
 ```
