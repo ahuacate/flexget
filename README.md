@@ -19,7 +19,7 @@ Tasks to be performed are:
 - [ ] 00.00 Patches & Fixes
 
 ## 1.00 Setting Up Flexget
-FlexGet is a multipurpose automation tool for all of your RSS media. Support for torrents, nzbs, podcasts, comics, TV, movies, RSS, HTML, CSV, and more. I use Flexget in conjunction with Filebot for post-processing and renaming all Flexget downloaded media.
+FlexGet is a multipurpose automation tool for all of your RSS media. Support for torrents, nzbs, podcasts, comics, TV, movies, RSS, HTML, CSV, and more. We use Flexget in conjunction with Filebot for post-processing and renaming all Flexget downloaded content.
 
 Flexget is a command line based application. Flexget uses YAML for configuration. A prebuilt YAML configuration file is available which is written to seek out documentaries and factual TV shows like Panoroma, Frontline and other informative News broadcasting. It consists of 3x files:
 
@@ -27,7 +27,7 @@ Flexget is a command line based application. Flexget uses YAML for configuration
 *  **serial.yml**: Add your TV series naming aliases and regexp entries;
 *  **secrets.yml**: This is where you must enter your usernames and passwords or api keys to sites like trakt, showrrss etc.
 
-You should have these three files already installed if you followed the instructions when installing Flexget [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). If you want you can 
+The above 3x files should be pre-installed if you followed the Flexget installation instructions [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). If you want you can 
 download the Flexget YAML configuration files again from GitHub. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
 ```
 wget https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -P /home/media/flexget &&
@@ -77,7 +77,7 @@ Finally, add a TV serie(s) to `My Shows`. For News or factual TV we recommend ad
 *  Panorama
 
 ### 2.11 Setup MVGroup
-Simply add your MVGroup credentials to the `secrets.yml` file by replacing the words **username** and **password** as follows:
+Add your MVGroup credentials to the `secrets.yml` file by replacing the words **username** and **password** as follows:
 ```
 ### RSS Feeds
 rssfeeds:
@@ -85,7 +85,7 @@ rssfeeds:
 ```
 
 ### 2.12 Setup TheTVDb
-Simply add your TheTVDb credentials to the `secrets.yml` file.
+Addyour TheTVDb credentials to the `secrets.yml` file.
 
 ### 2.13 How to edit the `secrets.yml` file
 Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
@@ -93,7 +93,7 @@ Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type t
 ```
 nano /home/media/flexget/secrets.yml
 ```
-The `secrets.yml` field entries requiring your credentials are mark **type_here** as follows:
+The `secrets.yml` field entries requiring your credentials are marked **type_here** as follows:
 ```
 ### Flexget Secrets File ###
 
