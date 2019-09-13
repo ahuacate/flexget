@@ -34,9 +34,11 @@ Flexget is a command line based application. Flexget uses YAML for configuration
 And,
 
 **RSS Source Regexp Files**
-*  **list-showrss.yml**: Add your TV series naming aliases and regexp entries;
+*  **list-showrss.yml**: Regexp entries to help resolve Showrss alias and naming convention issues for resolving by TheTVDb;
+*  **list-mvgroup.yml**: Regexp entries by keywords like bbc, pbs, ch5 etc for match criteria for MVGroup RSS feed; and,
+*  **list-documentarytorrents.yml**: Regexp entries by keywords like bbc, pbs, ch5 etc for match criteria for DocumentaryTorrents RSS feed;
 
-The above 3x files should be pre-installed if you followed the Flexget installation instructions [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). If you want you can 
+The above 5x files should be pre-installed if you followed the Flexget installation instructions [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). If you want you can 
 download the Flexget YAML configuration files again from GitHub. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
 ```
 wget https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -P /home/media/flexget &&
