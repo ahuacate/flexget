@@ -19,18 +19,105 @@ Tasks to be performed are:
 - [ ] 00.00 Patches & Fixes
 
 ## 1.00 Setting Up Flexget
-FlexGet is a multipurpose automation tool for all of your RSS media. Support for torrents, nzbs, podcasts, comics, TV, movies, RSS, HTML, CSV, and more. WE use Flexget in conjunction with Filebot which is used to post-process and rename all Flexget downloaded media.
+FlexGet is a multipurpose automation tool for all of your RSS media. Support for torrents, nzbs, podcasts, comics, TV, movies, RSS, HTML, CSV, and more. I use Flexget in conjunction with Filebot for post-processing and renaming all Flexget downloaded media.
 
-Flexget is a command line based application. Flexget uses YAML for configuration. A prebuilt YAML configuration file is available which is tailored to seek out documentaries and factual TV shows like Panoroma, Frontline and other informative News broadcasting. It consists of 3x files:
-*  **config.yml**: 
+Flexget is a command line based application. Flexget uses YAML for configuration. A prebuilt YAML configuration file is available which is written to seek out documentaries and factual TV shows like Panoroma, Frontline and other informative News broadcasting. It consists of 3x files:
 
-The is your Flexget configuration file which is pre-built and working. The main file config.yml also requires secrets.yml and serial.yml - so a total of 3x files.
+*  **config.yml**: This is where the smart stuff happens;
+*  **serial.yml**: Add your TV series naming aliases and regexp entries;
+*  **secrets.yml**: This is where you must enter your usernames and passwords or api keys to sites like trakt, showrrss etc.
 
-Download the Flexget YAML configuration file from GitHub. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
-
+You should have these three files already installed if you followed the instructions when installing Flexget [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). If you want you can 
+download the Flexget YAML configuration files again from GitHub. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
+```
 wget https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -P /home/media/flexget &&
 wget https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -P /home/media/flexget &&
 wget https://raw.githubusercontent.com/ahuacate/flexget/master/serial.yml -P /home/media/flexget
+```
+
+## 2.00 Get your `secrets.yml` in order
+The first step is to create user accounts at the following websites (all free).
+
+*  Showrss - https://showrss.info
+*  MVGroup - https://mvgroup.org
+*  tvDb - https://www.thetvdb.com
+
+### 2.10 Setup ShowRSS
+Login to your Showrss account [HERE](https://showrss.info). Then go to `Change Settings` and set as follows:
+
+| Edit your Settings | Value
+| :---  | :---:
+| Use Magnets | `☑`
+| Date format | Default
+| Timezone | `UTC`
+| Add new shows as | `Any HD quality`
+
+Then setup up your custom RSS feed address. Click on `My Feeds` and configure as follows:
+
+
+| Your personal timeline feed address | Value
+| :---  | :---:
+| Link type | `Use magnets in feed (recommended)`
+| Feed namespaces | `Include namespaces (required for catch`
+| Episode name style | `Raw episode name (torrent client)`
+| Quality | `Force any HD quality (override per-show setting)`
+| PROPER/REPACK | `Per-show settings (recommended)`
+| **The Output feed shoudl look like**
+| Your custom feed address: | `http://showrss.info/user/XXXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null`
+
+Then enter your username, password, Api or RSS feed url into your `secrets.yml` fields as required. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
+
+```
+nano /home/media/flexget/secrets.yml
+```
+The `secrets.yml` field codes requiring your credentials are shown as follows:
+```
+### Flexget Secrets File ###
+
+### Deluge Torrent Downloader ###
+### To find your deluge user and password type "cat /home/media/.config/deluge/auth" in your LXC hosting Deluge SW
+### Do Not Edit
+deluge:
+  username: flexget
+  password: 9c67cf728b8c079c2e0065ee11cb3a9a6771420a
+  host: 192.168.30.113
+  port: 58846
+
+### Folder Mount Points ###
+storage:
+  documentary: /mnt/video/documentary
+  downloads: /mnt/downloads/deluge
+
+### Trackt Account ###
+trakt:
+  account: type_here
+  username: type_here
+  
+### TVdB List Account ###
+thetvdb:
+  username: type_here
+  account_id: type_here
+  api_key: type_here
+  
+### MV Group Account ###
+mvgroup:
+  url: https://forums.mvgroup.org/rss.php?torrentsonly=1
+  username: type_here
+  password: type_here
+
+### RSS Feeds ###
+#### Example. 'showrss01: http://showrss.info/user/your_id.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null'
+rssfeeds:
+  showrss01: type_here
+  mvgroup01: type_here
+  ```
+Note: After entering your ddetails into the terminal, it's CTRL O (thats a capital letter O, not numerical 0) to prompt a save, ENTER to save the file and CTRL X to exit nano.
+
+### 2.10 
+## 3.00 
+
+
+
 
 
 ## 2.00 Download the FileBot deluge-postprocess.sh script for Deluge
