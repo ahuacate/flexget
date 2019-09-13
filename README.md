@@ -54,7 +54,6 @@ Login to your Showrss account [HERE](https://showrss.info). Then go to `Change S
 
 Then setup up your custom RSS feed address. Click on `My Feeds` and configure as follows:
 
-
 | Your personal timeline feed address | Value
 | :---  | :---
 | Link type | `Use magnets in feed (recommended)`
@@ -63,7 +62,23 @@ Then setup up your custom RSS feed address. Click on `My Feeds` and configure as
 | Quality | `Force any HD quality (override per-show setting)`
 | PROPER/REPACK | `Per-show settings (recommended)`
 | **The Output feed should resemble**
-| Your custom feed address: | `http://showrss.info/user/XXXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null`
+| Your custom RSS feed address: | `http://showrss.info/user/XXXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null`
+
+It is this custom RSS feed address which needs to inserted into your `secrets.yml` file like the following:
+```
+### RSS Feeds
+rssfeeds:
+  showrss01: http://showrss.info/user/XXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null
+  mvgroup01: https://username:password@forums.mvgroup.org/rss.php?torrentsonly=1
+```
+Last add some series to `My Shows`. For news and factual TV I recommend adding the following series:
+*  60 Minutes (US)
+*  Frontline
+*  Horizon (UK)
+*  Panorama
+
+### 2.11 Setup MVGroup
+
 
 Then enter your username, password, Api or RSS feed url into your `secrets.yml` fields as required. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
 
