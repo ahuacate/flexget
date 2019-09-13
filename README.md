@@ -95,8 +95,33 @@ Login to your Documentary Torrents account [HERE](http://documentarytorrents.com
 | :---  | :---
 | **Categories**
 |  | `☑` Adventure - HD
+|  | `☑` Biography - HD
+|  | `☑` Computers - HD
+|  | `☑` Crime - HD
+|  | `☑` Culture - HD
+|  | `☑` Discovery - HD
+|  | `☑` Economy - HD
+|  | `☑` Food - HD
+|  | `☑` HBO - HD
+|  | `☑` Health - HD
+|  | `☑` History - HD
+|  | `☑` NatGeo - HD
+|  | `☑` Nature - HD
+|  | `☑` PBS - HD
+|  | `☑` Politics - HD
+|  | `☑` Science - HD
+|  | `☑` Space - HD|  | `☑` 
+|  | `☑` Technology - HD
+|  | `☑` Transport - HD
+|  | `☑` Travel - HD
+|  | `☑` War - HD
+| **Feed Type**
+|  | *  Details link
+| **Log-in Type**
+|  | *  Standard (cookies)
+| including dead .torrent | `☐`
 
-Then 
+Then click `Get Link`
 
 ` Then go to `Change Settings` and set as follows:
 
