@@ -41,6 +41,7 @@ The first step is to create user accounts at the following websites (all free).
 *  Showrss - https://showrss.info
 *  MVGroup - https://mvgroup.org
 *  TheTVDb - https://www.thetvdb.com
+*  DocumentaryTorrents - http://documentarytorrents.com
 
 ### 2.10 Setup ShowRSS
 Login to your ShowRSS account [HERE](https://showrss.info). Then go to `Change Settings` and set as follows:
@@ -85,7 +86,19 @@ rssfeeds:
 ```
 
 ### 2.12 Setup TheTVDb
-Addyour TheTVDb credentials to the `secrets.yml` file.
+Add your TheTVDb credentials to the `secrets.yml` file.
+
+### 2.13 Setup Documentary Torrents
+Login to your Documentary Torrents account [HERE](http://documentarytorrents.com). Then click on the `Torrents Tab` and scoll to the bottom of the page and click on `Feed Info` or/ click [HERE](http://documentarytorrents.com/rss.php?custom=1). A new page will load titled `Custom RSS XML Feed`. Select the categories you want in your feed. I recommend to flag `☑`  all the categories label `HD` as follows:
+
+| Categories | Value 
+| :---  | :---: | :---
+| **Categories**
+|  | `☑` Adventure - HD
+
+Then 
+
+` Then go to `Change Settings` and set as follows:
 
 ### 2.13 How to edit the `secrets.yml` file
 Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
