@@ -45,6 +45,8 @@ The first step is to create user accounts at the following websites (all free).
 *  TheTVDb - https://www.thetvdb.com
 *  DocumentaryTorrents - http://documentarytorrents.com
 
+Keep your usernames, passwords and api keys handy as you will need them.
+
 ### 2.10 Setup ShowRSS
 Login to your ShowRSS account [HERE](https://showrss.info). Then go to `Change Settings` and set as follows:
 
