@@ -73,7 +73,7 @@ This custom RSS feed address needs to be inserted into your `secrets.yml` file l
 rssfeeds:
   showrss01: http://showrss.info/user/XXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null
 ```
-Finally, add a TV serie(s) to `My Shows`. For News or factual TV we recommend adding the following series:
+Finally, add a TV serie(s) to `My Shows`. ShowRSS is best to use for series which are problematic in Sonarr such as news or daily shows. For News or factual TV we recommend adding the following series:
 *  60 Minutes (US)
 *  Frontline
 *  Horizon (UK)
