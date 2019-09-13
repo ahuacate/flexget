@@ -40,10 +40,10 @@ The first step is to create user accounts at the following websites (all free).
 
 *  Showrss - https://showrss.info
 *  MVGroup - https://mvgroup.org
-*  tvDb - https://www.thetvdb.com
+*  TheTVDb - https://www.thetvdb.com
 
 ### 2.10 Setup ShowRSS
-Login to your Showrss account [HERE](https://showrss.info). Then go to `Change Settings` and set as follows:
+Login to your ShowRSS account [HERE](https://showrss.info). Then go to `Change Settings` and set as follows:
 
 | Edit your Settings | Value
 | :---  | :---:
@@ -64,23 +64,33 @@ Then setup up your custom RSS feed address. Click on `My Feeds` and configure as
 | **The Output feed should resemble**
 | Your custom RSS feed address: | `http://showrss.info/user/XXXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null`
 
-It is this custom RSS feed address which needs to inserted into your `secrets.yml` file like the following:
+This custom RSS feed address needs to be inserted into your `secrets.yml` file like the following example:
 ```
 ### RSS Feeds
 rssfeeds:
-  showrss01: http://showrss.info/user/XXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null
+  showrss01: **http://showrss.info/user/XXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null**
   mvgroup01: https://username:password@forums.mvgroup.org/rss.php?torrentsonly=1
 ```
-Last add some series to `My Shows`. For news and factual TV I recommend adding the following series:
+Finally, add a TV serie(s) to `My Shows`. For News or factual TV we recommend adding the following series:
 *  60 Minutes (US)
 *  Frontline
 *  Horizon (UK)
 *  Panorama
 
 ### 2.11 Setup MVGroup
+Simply add your MVGroup credentials to the `secrets.yml` file by replacing the words **username** and **password** as follows:
+```
+### RSS Feeds
+rssfeeds:
+  showrss01: http://showrss.info/user/XXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null
+  mvgroup01: https://**username**:**password**@forums.mvgroup.org/rss.php?torrentsonly=1
+```
 
+### 2.12 Setup TheTVDb
+Simply add your TheTVDb credentials to the `secrets.yml` file.
 
-Then enter your username, password, Api or RSS feed url into your `secrets.yml` fields as required. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
+### 2.13 How to edit the `secrets.yml` file
+Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
 
 ```
 nano /home/media/flexget/secrets.yml
@@ -126,9 +136,8 @@ rssfeeds:
   showrss01: type_here
   mvgroup01: type_here
   ```
-Note: After entering your ddetails into the terminal, it's CTRL O (thats a capital letter O, not numerical 0) to prompt a save, ENTER to save the file and CTRL X to exit nano.
+Note: After entering your details into the terminal, it's CTRL O (thats a capital letter O, not numerical 0) to prompt a save, ENTER to save the file, and CTRL X to exit nano.
 
-### 2.10 
 ## 3.00 
 
 
