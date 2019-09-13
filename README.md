@@ -56,13 +56,13 @@ Then setup up your custom RSS feed address. Click on `My Feeds` and configure as
 
 
 | Your personal timeline feed address | Value
-| :---  | :---:
+| :---  | :---
 | Link type | `Use magnets in feed (recommended)`
 | Feed namespaces | `Include namespaces (required for catch`
 | Episode name style | `Raw episode name (torrent client)`
 | Quality | `Force any HD quality (override per-show setting)`
 | PROPER/REPACK | `Per-show settings (recommended)`
-| **The Output feed shoudl look like**
+| **The Output feed should resemble**
 | Your custom feed address: | `http://showrss.info/user/XXXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null`
 
 Then enter your username, password, Api or RSS feed url into your `secrets.yml` fields as required. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
