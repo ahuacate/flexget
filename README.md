@@ -69,7 +69,6 @@ This custom RSS feed address needs to be inserted into your `secrets.yml` file l
 ### RSS Feeds
 rssfeeds:
   showrss01: **http://showrss.info/user/XXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null**
-  mvgroup01: https://username:password@forums.mvgroup.org/rss.php?torrentsonly=1
 ```
 Finally, add a TV serie(s) to `My Shows`. For News or factual TV we recommend adding the following series:
 *  60 Minutes (US)
@@ -82,8 +81,7 @@ Simply add your MVGroup credentials to the `secrets.yml` file by replacing the w
 ```
 ### RSS Feeds
 rssfeeds:
-  showrss01: http://showrss.info/user/XXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null
-  mvgroup01: https://**username**:**password**@forums.mvgroup.org/rss.php?torrentsonly=1
+  mvgroup01: https://username:password@forums.mvgroup.org/rss.php?torrentsonly=1
 ```
 
 ### 2.12 Setup TheTVDb
@@ -95,7 +93,7 @@ Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type t
 ```
 nano /home/media/flexget/secrets.yml
 ```
-The `secrets.yml` field codes requiring your credentials are shown as follows:
+The `secrets.yml` field entries requiring your credentials are mark **type_here** as follows:
 ```
 ### Flexget Secrets File ###
 
