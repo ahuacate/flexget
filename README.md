@@ -92,7 +92,7 @@ Add your TheTVDb credentials to the `secrets.yml` file.
 Login to your Documentary Torrents account [HERE](http://documentarytorrents.com). Then click on the `Torrents Tab` and scoll to the bottom of the page and click on `Feed Info` or/ click [HERE](http://documentarytorrents.com/rss.php?custom=1). A new page will load titled `Custom RSS XML Feed`. Select the categories you want in your feed. I recommend to flag `☑`  all the categories label `HD` as follows:
 
 | Categories | Value 
-| :---  | :---: | :---
+| :---  | :---
 | **Categories**
 |  | `☑` Adventure - HD
 
