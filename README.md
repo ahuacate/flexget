@@ -21,13 +21,18 @@ Tasks to be performed are:
 - [ ] 00.00 Patches & Fixes
 
 ## 1.00 Setting Up Flexget
-FlexGet is a multipurpose automation tool for all of your RSS media. Support for torrents, nzbs, podcasts, comics, TV, movies, RSS, HTML, CSV, and more. We use Flexget in conjunction with Filebot for post-processing and renaming all Flexget downloaded content.
+FlexGet is a multipurpose automation tool for all of your RSS media. Support for torrents, nzbs, podcasts, comics, TV, movies, RSS, HTML, CSV, and more. We use Flexget in conjunction with Filebot for downloading, post-processing and renaming poorly named and less commonly available content such as documentaries and News media.
 
-Flexget is a command line based application. Flexget uses YAML for configuration. A prebuilt YAML configuration file is available which is written to seek out documentaries and factual TV shows like Panoroma, Frontline and other informative News broadcasting. It consists of 3x files:
+The default RSS feed sources are: A) MVGroup; B) ShowRSS; and, C) Documentary Torrents,
 
+Flexget is a command line based application. Flexget uses YAML for configuration. A prebuilt YAML configuration file is available which is written to seek out documentaries and factual TV shows like Panoroma, Frontline and other informative News broadcasting. It consists of a set of files:
+
+**FlexGet Configuration Files**
 *  **config.yml**: This is where the smart stuff happens;
-*  **serial.yml**: Add your TV series naming aliases and regexp entries;
 *  **secrets.yml**: This is where you must enter your usernames and passwords or api keys to sites like trakt, showrrss etc.
+And,
+**RSS Source Regexp Files**
+*  **list-showrss.yml**: Add your TV series naming aliases and regexp entries;
 
 The above 3x files should be pre-installed if you followed the Flexget installation instructions [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). If you want you can 
 download the Flexget YAML configuration files again from GitHub. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
