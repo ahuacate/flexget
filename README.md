@@ -21,7 +21,17 @@ Tasks to be performed are:
 ## 1.00 Setting Up Flexget
 FlexGet is a multipurpose automation tool for all of your RSS media. Support for torrents, nzbs, podcasts, comics, TV, movies, RSS, HTML, CSV, and more. WE use Flexget in conjunction with Filebot which is used to post-process and rename all Flexget downloaded media.
 
-Flexget is a command line based application. Flexget uses YAML for configuration. A prebuilt YAML configuration showld be 
+Flexget is a command line based application. Flexget uses YAML for configuration. A prebuilt YAML configuration file is available which is tailored to seek out documentaries and factual TV shows like Panoroma, Frontline and other informative News broadcasting. It consists of 3x files:
+*  **config.yml**: 
+
+The is your Flexget configuration file which is pre-built and working. The main file config.yml also requires secrets.yml and serial.yml - so a total of 3x files.
+
+Download the Flexget YAML configuration file from GitHub. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
+
+wget https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -P /home/media/flexget &&
+wget https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -P /home/media/flexget &&
+wget https://raw.githubusercontent.com/ahuacate/flexget/master/serial.yml -P /home/media/flexget
+
 
 ## 2.00 Download the FileBot deluge-postprocess.sh script for Deluge
 Filebot renames and moves all your Flexget downloads ready for viewing on your NAS. This action is done by running a shell script called `deluge-postprocess.sh`. Deluge uses the Execute Plugin to execute `deluge-postprocess.sh` whenever it completes a torrent download.
