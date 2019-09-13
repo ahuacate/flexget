@@ -71,7 +71,7 @@ This custom RSS feed address needs to be inserted into your `secrets.yml` file l
 ```
 ### RSS Feeds
 rssfeeds:
-  showrss01: **http://showrss.info/user/XXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null**
+  showrss01: http://showrss.info/user/XXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null
 ```
 Finally, add a TV serie(s) to `My Shows`. For News or factual TV we recommend adding the following series:
 *  60 Minutes (US)
