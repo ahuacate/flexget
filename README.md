@@ -15,7 +15,9 @@ Other Prerequisites are:
 - [x] Flexget LXC with Flexget SW installed as per [Flexget LXC - Ubuntu 18.04](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804)
 
 Tasks to be performed are:
-- [ ] 1.0 Setup Jellyfin and perform base configuration
+- [ ] 1.00 Setting Up Flexget
+- [ ] 2.00 Get your `secrets.yml` in order
+- [ ] 3.00 Download the FileBot deluge-postprocess.sh script for Deluge
 - [ ] 00.00 Patches & Fixes
 
 ## 1.00 Setting Up Flexget
@@ -116,14 +118,17 @@ Login to your Documentary Torrents account [HERE](http://documentarytorrents.com
 |  | `☑` Travel - HD
 |  | `☑` War - HD
 | **Feed Type**
-|  | *  Details link
+|  | `☑` Download link
 | **Log-in Type**
-|  | *  Standard (cookies)
+|  | `☑` Alternative (no cookies)
 | including dead .torrent | `☐`
 
-Then click `Get Link`
-
-` Then go to `Change Settings` and set as follows:
+Then click `Get Link` and your newly generated RSS link with passkey will show. Cut & Paste into the `secrets.yml` file as follows:
+```
+### RSS Feeds
+rssfeeds:
+  documentarytorrents01: type_here
+```
 
 ### 2.13 How to edit the `secrets.yml` file
 Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
@@ -131,7 +136,7 @@ Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type t
 ```
 nano /home/media/flexget/secrets.yml
 ```
-The `secrets.yml` field entries requiring your credentials are marked **type_here** as follows:
+Enter your credentials into the `secrets.yml` fields marked **type_here** as follows:
 ```
 ### Flexget Secrets File ###
 
@@ -154,13 +159,13 @@ trakt:
   account: type_here
   username: type_here
   
-### TVdB List Account ###
+### TheTVDb Account ###
 thetvdb:
   username: type_here
   account_id: type_here
   api_key: type_here
   
-### MV Group Account ###
+### MVGroup Account ###
 mvgroup:
   url: https://forums.mvgroup.org/rss.php?torrentsonly=1
   username: type_here
@@ -171,16 +176,11 @@ mvgroup:
 rssfeeds:
   showrss01: type_here
   mvgroup01: type_here
-  ```
+  documentarytorrents01: type_here
+```
 Note: After entering your details into the terminal, it's CTRL O (thats a capital letter O, not numerical 0) to prompt a save, ENTER to save the file, and CTRL X to exit nano.
 
-## 3.00 
-
-
-
-
-
-## 2.00 Download the FileBot deluge-postprocess.sh script for Deluge
+## 3.00 Download the FileBot deluge-postprocess.sh script for Deluge
 Filebot renames and moves all your Flexget downloads ready for viewing on your NAS. This action is done by running a shell script called `deluge-postprocess.sh`. Deluge uses the Execute Plugin to execute `deluge-postprocess.sh` whenever it completes a torrent download.
 
 This script (`deluge-postprocess.sh`) is for Deluge only. It would've been installed when you completed the Deluge installation guide [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#400-deluge-lxc---ubuntu-1804).
@@ -203,22 +203,41 @@ nano /home/media/.config/deluge/deluge-postprocess.sh
 ```
 Now cut & paste the following into the terminal window:
 ```
-#!/bin/sh -xu
+#!/bin/bash
 
 # Input Parameters & Folder Configuration
 SERIES_INPUT="/mnt/downloads/deluge/complete/flexget/series"
 SERIES_OUTPUT="/mnt/video/documentary/series"
 MOVIE_INPUT="/mnt/downloads/deluge/complete/flexget/movies"
 MOVIE_OUTPUT="/mnt/video/documentary/movies"
-UNSORTED_OUTPUT="/mnt/video/documentary/unsorted"
 
 filebot -script fn:amc --output "$SERIES_OUTPUT" --def "ut_label=series" --action copy --conflict override -non-strict --def artwork=n --def unsorted=y --def unsortedFormat="$MOVIE_INPUT/{fn}.{ext}" --def clean=y "ut_dir=$SERIES_INPUT" "ut_kind=multi" --def "seriesFormat=/mnt/video/documentary/series/{n}/{'S'+s.pad(2)}/{n.replaceAll(/[!?.]+$/).space('.')}.{'s'+s.pad(2)}e{e.pad(2)}.{vf}.{source}.{vc}.{ac}" --def excludeList="/home/media/.filebot/amc.txt" -no-xattr --log-file "/home/media/.filebot/amc.log" --def reportError=y > /home/media/.filebot/output.txt 2>&1
 
-
-filebot -script fn:amc --output "$MOVIE_OUTPUT" --def "ut_label=movies" --action move --conflict override --def artwork=n --def clean=y "ut_dir=$MOVIE_INPUT" "ut_kind=multi" --def "movieFormat=/mnt/video/documentary/movies/{ny}/{n.upperInitial().replaceAll(/[!?.]+$/).space('.')}.{y}.{vf}.{source}.{vc}.{ac}" --def unsorted=y --def unsortedFormat="$UNSORTED_OUTPUT/{fn}.{ext}" --def excludeList="/home/media/.filebot/amc.txt" -no-xattr --log-file "/home/media/.filebot/amc.log" --def reportError=y > /home/media/.filebot/output.txt 2>&1" > /home/media/.config/deluge/deluge-postprocess.sh
+filebot -script fn:amc --output "$MOVIE_OUTPUT" --def "ut_label=movies" --action copy --conflict override --def artwork=n --def clean=y "ut_dir=$MOVIE_INPUT" "ut_kind=multi" --def "movieFormat=/mnt/video/documentary/movies/{ny}/{n.upperInitial().replaceAll(/[!?.]+$/).space('.')}.{y}.{vf}.{source}.{vc}.{ac}" --def unsorted=y --def unsortedFormat="$UNSORTED_OUTPUT/{fn}.{ext}" --def excludeList="/home/media/.filebot/amc.txt" -no-xattr --log-file "/home/media/.filebot/amc.log" --def reportError=y > /home/media/.filebot/output.txt 2>&1
 ```
 Note: After pasting your key (copy & paste the license key code with your mouse buttons) into the terminal, it's `CTRL O` (thats a capital letter O, not numerical 0) to prompt a save, `Enter` to save the file and `CTRL X` to exit nano.
 
-Completed.
-## 1.0 Get your config.yml from GitHub
-In your web browser type `http://192.168.30.113:8112/` and login with the default password. 
+**Option (3):** Echo Method
+With the Proxmox web interface go to `typhoon-01` > `113 (deluge)` > `>_ Shell` and type the following:
+```
+echo -e '#!/bin/bash
+
+# Input Parameters & Folder Configuration
+SERIES_INPUT="/mnt/downloads/deluge/complete/flexget/series"
+SERIES_OUTPUT="/mnt/video/documentary/series"
+MOVIE_INPUT="/mnt/downloads/deluge/complete/flexget/movies"
+MOVIE_OUTPUT="/mnt/video/documentary/movies"
+
+filebot -script fn:amc --output "$SERIES_OUTPUT" --def "ut_label=series" --action copy --conflict override -non-strict --def artwork=n --def unsorted=y --def unsortedFormat="$MOVIE_INPUT/{fn}.{ext}" --def clean=y "ut_dir=$SERIES_INPUT" "ut_kind=multi" --def "seriesFormat=/mnt/video/documentary/series/{n}/{'S'+s.pad(2)}/{n.replaceAll(/[!?.]+$/).space('.')}.{'s'+s.pad(2)}e{e.pad(2)}.{vf}.{source}.{vc}.{ac}" --def excludeList="/home/media/.filebot/amc.txt" -no-xattr --log-file "/home/media/.filebot/amc.log" --def reportError=y > /home/media/.filebot/output.txt 2>&1
+
+filebot -script fn:amc --output "$MOVIE_OUTPUT" --def "ut_label=movies" --action copy --conflict override --def artwork=n --def clean=y "ut_dir=$MOVIE_INPUT" "ut_kind=multi" --def "movieFormat=/mnt/video/documentary/movies/{ny}/{n.upperInitial().replaceAll(/[!?.]+$/).space('.')}.{y}.{vf}.{source}.{vc}.{ac}" --def unsorted=y --def unsortedFormat="$UNSORTED_OUTPUT/{fn}.{ext}" --def excludeList="/home/media/.filebot/amc.txt" -no-xattr --log-file "/home/media/.filebot/amc.log" --def reportError=y > /home/media/.filebot/output.txt 2>&1' > /home/media/.config/deluge/deluge-postprocess.sh
+```
+## 00.00 Patches and Fixes
+All CLI commands performed in the `typhoon-01` > `114 (flexget)` > `>_ Shell` :
+
+**Reset your Flexget Database**
+This will completely wipe all records back to day 0.
+```
+flexget reset --sure
+```
+
