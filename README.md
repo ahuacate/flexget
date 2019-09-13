@@ -30,7 +30,9 @@ Flexget is a command line based application. Flexget uses YAML for configuration
 **FlexGet Configuration Files**
 *  **config.yml**: This is where the smart stuff happens;
 *  **secrets.yml**: This is where you must enter your usernames and passwords or api keys to sites like trakt, showrrss etc.
+
 And,
+
 **RSS Source Regexp Files**
 *  **list-showrss.yml**: Add your TV series naming aliases and regexp entries;
 
