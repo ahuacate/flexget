@@ -246,3 +246,9 @@ flexget reset --sure
 ```
 flexget --test execute
 ```
+
+**Erase and Clean FileBot Database**
+```
+rm {/home/media/.filebot/amc.log,/home/media/.filebot/history.xml,/home/media/.filebot/movies_amc.txt,/home/media/.filebot/movies_output.txt,/home/media/.filebot/series_amc.txt,/home/media/.filebot/series_output.txt} &&
+filebot -clear-cache
+```
