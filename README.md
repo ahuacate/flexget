@@ -23,27 +23,31 @@ Tasks to be performed are:
 ## 1.00 Setting Up Flexget
 FlexGet is a multipurpose automation tool for all of your RSS media. Support for torrents, nzbs, podcasts, comics, TV, movies, RSS, HTML, CSV, and more. We use Flexget in conjunction with Filebot for downloading, post-processing and renaming poorly named and less commonly available content such as documentaries and News media.
 
-The default RSS feed sources are: A) MVGroup; B) ShowRSS; and, C) Documentary Torrents,
+This recipes default RSS feed sources are: A) MVGroup; B) ShowRSS; and, C) Documentary Torrents.
 
-Flexget is a command line based application. Flexget uses YAML for configuration. A prebuilt YAML configuration file is available which is written to seek out documentaries and factual TV shows like Panoroma, Frontline and other informative News broadcasting. It consists of a set of files:
+Flexget is a command line based application. Flexget uses YAML for configuration. The default prebuilt YAML configuration files are constructed to seek out documentaries and factual TV shows like Panoroma, Frontline and other informative News series. It consists of a set of five files:
 
 **FlexGet Configuration Files**
 *  **config.yml**: This is where the smart stuff happens;
-*  **secrets.yml**: This is where you must enter your usernames and passwords or api keys to sites like trakt, showrrss etc.
+*  **secrets.yml**: This is where you must enter your usernames, passwords, api keys and RSS feed URLs for sites like trakt, showrrss. TheTVDb etc.
 
 And,
 
 **RSS Source Regexp Files**
-*  **list-showrss.yml**: Regexp entries to help resolve Showrss alias and naming convention issues for resolving by TheTVDb;
+*  **list-showrss.yml**: Regexp entries to help resolve ShowRSS alias's and naming convention issues;
 *  **list-mvgroup.yml**: Regexp entries by keywords like bbc, pbs, ch5 etc for match criteria for MVGroup RSS feed; and,
 *  **list-documentarytorrents.yml**: Regexp entries by keywords like bbc, pbs, ch5 etc for match criteria for DocumentaryTorrents RSS feed;
 
-The above 5x files should be pre-installed if you followed the Flexget installation instructions [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). If you want you can 
-download the Flexget YAML configuration files again from GitHub. Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
+The above 5x files would've been installed if you followed the Flexget installation instructions [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). To download again go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
 ```
 wget https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -P /home/media/flexget &&
+wget https://raw.githubusercontent.com/ahuacate/flexget/master/list-showrss.yml.yml -P /home/media/flexget &&
+wget https://raw.githubusercontent.com/ahuacate/flexget/master/list-mvgroup.yml -P /home/media/flexget &&
+wget https://raw.githubusercontent.com/ahuacate/flexget/master/list-documentarytorrents.yml -P /home/media/flexget
+```
+Do not download 'secrets.yml' after entering your secrets.yml file credentials - they will be overwritten.
+```
 wget https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -P /home/media/flexget &&
-wget https://raw.githubusercontent.com/ahuacate/flexget/master/serial.yml -P /home/media/flexget
 ```
 
 ## 2.00 Get your `secrets.yml` in order
@@ -54,7 +58,7 @@ The first step is to create user accounts at the following websites (all free).
 *  TheTVDb - https://www.thetvdb.com
 *  DocumentaryTorrents - http://documentarytorrents.com
 
-Keep your usernames, passwords and api keys handy as you will need them.
+Keep your usernames, passwords and api keys ready as you will need them!
 
 ### 2.10 Setup ShowRSS
 Login to your ShowRSS account [HERE](https://showrss.info). Then go to `Change Settings` and set as follows:
@@ -78,20 +82,20 @@ Then setup up your custom RSS feed address. Click on `My Feeds` and configure as
 | **The Output feed should resemble**
 | Your custom RSS feed address: | `http://showrss.info/user/XXXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null`
 
-This custom RSS feed address needs to be inserted into your `secrets.yml` file like the following example:
+The custom RSS feed address needs to be inserted into your `secrets.yml` file the the example below:
 ```
 ### RSS Feeds
 rssfeeds:
   showrss01: http://showrss.info/user/XXXXX.rss?magnets=true&namespaces=true&name=null&quality=anyhd&re=null
 ```
-Finally, add a TV serie(s) to `My Shows`. ShowRSS is best to use for series which are problematic in Sonarr such as news or daily shows. For News or factual TV we recommend adding the following series:
+Finally, add a TV serie(s) to `My Shows`. ShowRSS is best to use for series which are problematic in Sonarr such as News or daily shows. For News or factual TV we recommend adding the following series:
 *  60 Minutes (US)
 *  Frontline
 *  Horizon (UK)
 *  Panorama
 
 ### 2.11 Setup MVGroup
-Add your MVGroup credentials to the `secrets.yml` file by replacing the words **username** and **password** as follows:
+Add your MVGroup credentials to the `secrets.yml` file by replacing the words **username** and **password** only as follows:
 ```
 ### RSS Feeds
 rssfeeds:
@@ -192,7 +196,7 @@ rssfeeds:
 Note: After entering your details into the terminal, it's CTRL O (thats a capital letter O, not numerical 0) to prompt a save, ENTER to save the file, and CTRL X to exit nano.
 
 ## 3.00 Download the FileBot deluge-postprocess.sh script for Deluge
-Filebot renames and moves all your Flexget downloads ready for viewing on your NAS. This action is done by running a shell script called `deluge-postprocess.sh`. Deluge uses the Execute Plugin to execute `deluge-postprocess.sh` whenever it completes a torrent download.
+Filebot renames and moves all your Flexget downloads ready for viewing to your NAS. This action is done by running a shell script called `deluge-postprocess.sh`. Deluge uses the Execute Plugin to execute `deluge-postprocess.sh` whenever it completes a torrent download.
 
 This script (`deluge-postprocess.sh`) is for Deluge only. It would've been installed when you completed the Deluge installation guide [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#400-deluge-lxc---ubuntu-1804).
 
@@ -252,3 +256,7 @@ This will completely wipe all records back to day 0.
 flexget reset --sure
 ```
 
+**Execute a test run only**
+```
+flexget --test execute
+```
