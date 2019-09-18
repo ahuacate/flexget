@@ -40,17 +40,17 @@ And,
 
 The above 5x files would've been installed if you followed the Flexget installation instructions [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). To download again go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
 ```
-wget https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -P /home/media/flexget &&
-wget https://raw.githubusercontent.com/ahuacate/flexget/master/list-showrss.yml.yml -P /home/media/flexget &&
-wget https://raw.githubusercontent.com/ahuacate/flexget/master/list-mvgroup.yml -P /home/media/flexget &&
-wget https://raw.githubusercontent.com/ahuacate/flexget/master/list-documentarytorrents.yml -P /home/media/flexget
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -O /home/media/flexget &&
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-showrss.yml.yml -O /home/media/flexget &&
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-mvgroup.yml -O /home/media/flexget &&
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-documentarytorrents.yml -O /home/media/flexget
 ```
-Do not download 'secrets.yml' after entering your secrets.yml file credentials - they will be overwritten.
+Please note. Do not download the 'secrets.yml' if you've already entered your private credentials into the secrets.yml file as doing so will result in them being overwritten.
 ```
-wget https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -P /home/media/flexget &&
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -O /home/media/flexget
 ```
 
-## 2.00 Get your `secrets.yml` in order
+## 2.00 Complete the `secrets.yml` file with your private credentials
 The first step is to create user accounts at the following websites (all free).
 
 *  Showrss - https://showrss.info
@@ -145,7 +145,7 @@ rssfeeds:
   documentarytorrents01: type_here
 ```
 
-### 2.13 How to edit the `secrets.yml` file
+### 2.13 Edit your `secrets.yml` file
 Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
 
 ```
