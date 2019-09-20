@@ -40,14 +40,14 @@ And,
 
 The above 5x files would've been installed if you followed the Flexget installation instructions [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). To download again go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
 ```
-wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -O /home/media/flexget &&
-wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-showrss.yml.yml -O /home/media/flexget &&
-wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-mvgroup.yml -O /home/media/flexget &&
-wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-documentarytorrents.yml -O /home/media/flexget
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -O /home/media/flexget/config.yml &&
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-showrss.yml.yml -O /home/media/flexget/list-showrss.yml.yml &&
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-mvgroup.yml -O /home/media/flexget/list-mvgroup.yml &&
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-documentarytorrents.yml -O /home/media/flexget/list-documentarytorrents.yml
 ```
 **Please note.** Downloading `secrets.yml` again will overwrite your previous copy. So if you've already entered your private credentials into the `secrets.yml` file downloading again will result in them being overwritten.
 ```
-wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -O /home/media/flexget
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -O /home/media/flexget/secrets.yml
 ```
 
 ## 2.00 Setup your ShowRSS, MVGroup, TheTVDb and Documentary Torrent Accounts
@@ -205,7 +205,7 @@ In the event you want to upgrade or overwrite your `deluge-postprocess.sh` you c
 With the Proxmox web interface go to `typhoon-01` > `113 (deluge)` > `>_ Shell` and type the following:
 
 ```
-wget -q https://raw.githubusercontent.com/ahuacate/deluge/master/deluge-postprocess.sh -O /home/media/.config/deluge &&
+wget -q https://raw.githubusercontent.com/ahuacate/deluge/master/deluge-postprocess.sh -O /home/media/.config/deluge/deluge-postprocess.sh &&
 chmod +rx /home/media/.config/deluge/deluge-postprocess.sh &&
 chown 1005:1005 /home/media/.config/deluge/deluge-postprocess.sh
 ```
