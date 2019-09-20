@@ -50,15 +50,15 @@ wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-documenta
 wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -O /home/media/flexget
 ```
 
-## 2.00 Complete the `secrets.yml` file with your private credentials
-The first step is to create user accounts at the following websites (all free).
+## 2.00 Setup your ShowRSS, MVGroup, TheTVDb and Documentary Torrent Accounts
+The first step is to create user accounts at the following websites (all free) if you have'nt already done so.
 
 *  Showrss - https://showrss.info
 *  MVGroup - https://mvgroup.org
 *  TheTVDb - https://www.thetvdb.com
 *  DocumentaryTorrents - http://documentarytorrents.com
 
-Keep your usernames, passwords and api keys ready as you will need them!
+Keep your usernames, passwords and api keys ready as you will need them in the next steps.
 
 ### 2.10 Setup ShowRSS
 Login to your ShowRSS account [HERE](https://showrss.info). Then go to `Change Settings` and set as follows:
@@ -145,7 +145,7 @@ rssfeeds:
   documentarytorrents01: type_here
 ```
 
-### 2.13 Edit your `secrets.yml` file
+### 2.13 How to edit your `secrets.yml` file
 Go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
 
 ```
