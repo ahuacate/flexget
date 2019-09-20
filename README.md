@@ -16,7 +16,7 @@ Other Prerequisites are:
 
 Tasks to be performed are:
 - [ ] 1.00 Setting Up Flexget
-- [ ] 2.00 Get your `secrets.yml` in order
+- [ ] 2.00 Setup your ShowRSS, MVGroup, TheTVDb and Documentary Torrent Accounts
 - [ ] 3.00 Download the FileBot deluge-postprocess.sh script for Deluge
 - [ ] 00.00 Patches & Fixes
 
