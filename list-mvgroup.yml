@@ -1,0 +1,10 @@
+regexp:
+  accept:
+    - bbc
+    - smithsonian ch
+    - discovery ch
+    - pbs
+    - ch5
+    - national geographic
+  reject:
+    - bbc.proms
