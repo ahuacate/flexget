@@ -1,0 +1,9 @@
+regexp:
+  accept:
+    - bbc
+    - national geographic
+    - national.geographic
+    - national.geo
+    - war
+  reject:
+    - bbc.proms
