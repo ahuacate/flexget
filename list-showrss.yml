@@ -1,0 +1,42 @@
+series:
+  - 60 Minutes:
+      identified_by: ep
+      begin: S51E40
+      alternate_name:
+          - 60 Minutes (US)         
+  - Horizon:
+      identified_by: ep
+      begin: S2019E01
+      alternate_name:
+          - Horizon (UK)
+          - BBC Horizon (UK)
+          - BBC Horizon
+          - BBC Horizon 2019
+      name_regexp:
+          - horizon.(UK)
+          - bbc.horizon.(UK)
+          - bbc.horizon
+          - bbc.horizon.2019
+  - Panorama:
+      identified_by: ep
+      begin: S2019E28
+      alternate_name:
+          - Panorama (UK)
+          - BBC Panorama (UK)
+          - BBC Panorama
+          - BBC Panorama 2019
+      name_regexp:
+          - panorama.(UK)
+          - bbc.panorama.(UK)
+          - bbc.panorama
+          - bbc.panorama.2019
+  - Dateline NBC:
+      identified_by: ep
+      begin: S27E45
+      alternate_name:
+          - Dateline (NBC)
+          - NBC Dateline
+      name_regexp:
+          - dateline.nbc
+          - dateline.(nbc)
+          - nbc.dateline
