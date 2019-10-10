@@ -207,7 +207,7 @@ With the Proxmox web interface go to `typhoon-01` > `113 (deluge)` > `>_ Shell` 
 ```
 wget -q https://raw.githubusercontent.com/ahuacate/deluge/master/deluge-postprocess.sh -O /home/media/.config/deluge/deluge-postprocess.sh &&
 chmod +rx /home/media/.config/deluge/deluge-postprocess.sh &&
-chown 1005:1005 /home/media/.config/deluge/deluge-postprocess.sh
+chown 1105:100 /home/media/.config/deluge/deluge-postprocess.sh
 ```
 
 ## 00.00 Patches and Fixes
@@ -228,4 +228,10 @@ flexget --test execute
 ```
 rm {/home/media/.filebot/amc.log,/home/media/.filebot/history.xml,/home/media/.filebot/movies_amc.txt,/home/media/.filebot/movies_output.txt,/home/media/.filebot/series_amc.txt,/home/media/.filebot/series_output.txt} &&
 filebot -clear-cache
+```
+
+**Execute Filebot Script**
+With the Proxmox web interface go to `typhoon-01` > `113 (deluge)` > `>_ Shell` and type the following:
+```
+/home/media/.config/deluge/deluge-postprocess.sh
 ```
