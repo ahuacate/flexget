@@ -18,7 +18,10 @@ Tasks to be performed are:
 - [ ] 1.00 Setting Up Flexget
 - [ ] 2.00 Setup your ShowRSS, MVGroup, TheTVDb and Documentary Torrent Accounts
 - [ ] 3.00 Download the FileBot deluge-postprocess.sh script for Deluge
+- [ ] 4.00 Create & Restore Flexget Backups
 - [ ] 00.00 Patches & Fixes
+
+---
 
 ## 1.00 Setting Up Flexget
 FlexGet is a multipurpose automation tool for all of your RSS media. Support for torrents, nzbs, podcasts, comics, TV, movies, RSS, HTML, CSV, and more. We use Flexget in conjunction with Filebot for downloading, post-processing and renaming poorly named and less commonly available content such as documentaries and News media.
@@ -49,6 +52,7 @@ wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-documenta
 ```
 wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -O /home/media/flexget/secrets.yml
 ```
+---
 
 ## 2.00 Setup your ShowRSS, MVGroup, TheTVDb and Documentary Torrent Accounts
 The first step is to create user accounts at the following websites (all free) if you have'nt already done so.
@@ -195,6 +199,8 @@ rssfeeds:
 ```
 Note: After entering your details into the terminal, it's CTRL O (thats a capital letter O, not numerical 0) to prompt a save, ENTER to save the file, and CTRL X to exit nano.
 
+---
+
 ## 3.00 Download the FileBot deluge-postprocess.sh script for Deluge
 Filebot renames and moves all your Flexget downloads ready for viewing to your NAS. This action is done by Deluge running a shell script called `deluge-postprocess.sh`. Deluge uses the Execute Plugin to execute `deluge-postprocess.sh` whenever it completes a torrent download.
 
@@ -209,6 +215,34 @@ wget -q https://raw.githubusercontent.com/ahuacate/deluge/master/deluge-postproc
 chmod +rx /home/media/.config/deluge/deluge-postprocess.sh &&
 chown 1605:65605 /home/media/.config/deluge/deluge-postprocess.sh
 ```
+
+---
+
+## 4.00 Create & Restore Flexget Backups
+
+Flexget doesnt have any WebGUI backup & restore function.
+
+After installing Flexget on your machine you may want to reuse the old config files in order to skip the full reconfiguration. For that purpose we CLI to:
+
+*  Backup Settings;
+*  Restore Settings.
+
+### 4.01 Backup settings
+Go to the Proxmox web interface `typhoon-01` > `114 (flexget)` > `>_ Shell` and type the following:
+
+```
+sudo cp /home/media/flexget/*.yml -rf /mnt/backup/flexget
+```
+
+### 4.02 Restore settings
+Go to the Proxmox web interface `typhoon-01` > `114 (flexget)` > `>_ Shell` and type the following:
+
+```
+sudo cp /mnt/backup/flexget/*.yml -rf /home/media/flexget &&
+chown 1605:65605 /home/media/flexget/*.yml
+```
+
+---
 
 ## 00.00 Patches and Fixes
 All CLI commands performed in the `typhoon-01` > `114 (flexget)` > `>_ Shell` :
