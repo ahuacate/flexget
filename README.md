@@ -46,11 +46,13 @@ The above 5x files would've been installed if you followed the Flexget installat
 wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -O /home/media/flexget/config.yml &&
 wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-showrss.yml.yml -O /home/media/flexget/list-showrss.yml.yml &&
 wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-mvgroup.yml -O /home/media/flexget/list-mvgroup.yml &&
-wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-documentarytorrents.yml -O /home/media/flexget/list-documentarytorrents.yml
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-documentarytorrents.yml -O /home/media/flexget/list-documentarytorrents.yml &&
+chown 1605:65605 /home/media/flexget/*.yml
 ```
-**Please note.** Downloading `secrets.yml` again will overwrite your previous copy. So if you've already entered your private credentials into the `secrets.yml` file downloading again will result in them being overwritten.
+**Please note.** Downloading `secrets.yml` again will overwrite your previous copy. So if you've already entered your private credentials into the `secrets.yml` downloading again will result in them being overwritten - probably a time wasting experience.
 ```
-wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -O /home/media/flexget/secrets.yml
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/secrets.yml -O /home/media/flexget/secrets.yml &&
+chown 1605:65605 /home/media/flexget/secrets.yml
 ```
 ---
 
