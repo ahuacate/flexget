@@ -207,7 +207,7 @@ With the Proxmox web interface go to `typhoon-01` > `113 (deluge)` > `>_ Shell` 
 ```
 wget -q https://raw.githubusercontent.com/ahuacate/deluge/master/deluge-postprocess.sh -O /home/media/.config/deluge/deluge-postprocess.sh &&
 chmod +rx /home/media/.config/deluge/deluge-postprocess.sh &&
-chown 1105:100 /home/media/.config/deluge/deluge-postprocess.sh
+chown 1605:65605 /home/media/.config/deluge/deluge-postprocess.sh
 ```
 
 ## 00.00 Patches and Fixes
