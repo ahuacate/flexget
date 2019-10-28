@@ -249,6 +249,17 @@ chown 1605:65605 /home/media/flexget/*.yml
 ## 00.00 Patches and Fixes
 All CLI commands performed in the `typhoon-01` > `114 (flexget)` > `>_ Shell` :
 
+**Check Filebot Version and is without errors**
+To check your FileBot installation is without errors and version type the following:
+```
+sudo -u media -H sh -c "filebot -script fn:sysinfo"
+```
+
+**Update Filebot**
+```
+bash -xu <<< "$(curl -fsSL https://raw.githubusercontent.com/filebot/plugins/master/installer/deb.sh)"
+```
+
 **Reset your Flexget Database**
 This will completely wipe all records back to day 0.
 ```
