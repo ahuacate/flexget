@@ -250,6 +250,7 @@ chown 1605:65605 /home/media/flexget/*.yml
 All CLI commands performed in the `typhoon-01` > `114 (flexget)` > `>_ Shell` :
 
 **Check Filebot Version and is without errors**
+
 To check your FileBot installation is without errors and version type the following:
 ```
 sudo -u media -H sh -c "filebot -script fn:sysinfo"
@@ -261,6 +262,7 @@ bash -xu <<< "$(curl -fsSL https://raw.githubusercontent.com/filebot/plugins/mas
 ```
 
 **Reset your Flexget Database**
+
 This will completely wipe all records back to day 0.
 ```
 flexget reset --sure
@@ -278,7 +280,9 @@ filebot -clear-cache
 ```
 
 **Execute Filebot Script**
+
 With the Proxmox web interface go to `typhoon-01` > `113 (deluge)` > `>_ Shell` and type the following:
 ```
-/home/media/.config/deluge/deluge-postprocess.sh
+sudo -u media -H sh -c "/home/media/.config/deluge/deluge-postprocess.sh" &&
+cat /home/media/.filebot/series_output.txt
 ```
