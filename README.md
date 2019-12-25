@@ -15,11 +15,18 @@ Other Prerequisites are:
 - [x] Flexget LXC with Flexget SW installed as per [Flexget LXC - Ubuntu 18.04](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804)
 
 Tasks to be performed are:
-- [ ] 1.00 Setting Up Flexget
-- [ ] 2.00 Setup your ShowRSS, MVGroup, TheTVDb and Documentary Torrent Accounts
-- [ ] 3.00 Download the FileBot deluge-postprocess.sh script for Deluge
-- [ ] 4.00 Create & Restore Flexget Backups
-- [ ] 00.00 Patches & Fixes
+- [1.00 Setting Up Flexget](#100-setting-up-flexget)
+- [2.00 Setup your ShowRSS, MVGroup, TheTVDb and Documentary Torrent Accounts](#200-setup-your-showrss-mvgroup-thetvdb-and-documentary-torrent-accounts)
+	- [2.10 Setup ShowRSS](#210-setup-showrss)
+	- [2.11 Setup MVGroup](#211-setup-mvgroup)
+	- [2.12 Setup TheTVDb](#212-setup-thetvdb)
+	- [2.13 Setup Documentary Torrents](#213-setup-documentary-torrents)
+	- [2.13 How to edit your `secrets.yml` file](#213-how-to-edit-your-secretsyml-file)
+- [3.00 Download the FileBot deluge-postprocess.sh script for Deluge](#300-download-the-filebot-deluge-postprocesssh-script-for-deluge)
+- [4.00 Create & Restore Flexget Backups](#400-create--restore-flexget-backups)
+	- [4.01 Backup settings](#401-backup-settings)
+	- [4.02 Restore settings](#402-restore-settings)
+- [00.00 Patches and Fixes](#0000-patches-and-fixes)
 
 ---
 
