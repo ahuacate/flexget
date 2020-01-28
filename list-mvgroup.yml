@@ -8,3 +8,5 @@ regexp:
     - national geographic
   reject:
     - bbc.proms
+    - Great.British.Railway.Journeys
+    - How.the.Universe.Works
