@@ -5,7 +5,3 @@ regexp:
     - national.geographic
     - national.geo
     - war
-  reject:
-    - bbc.proms
-    - Great.British.Railway.Journeys
-    - How.the.Universe.Works
