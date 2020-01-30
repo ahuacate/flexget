@@ -1,3 +1,4 @@
+regexp:
   reject:
     - bbc.proms
     - Great.British.Railway.Journeys
