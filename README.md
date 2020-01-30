@@ -51,9 +51,10 @@ And,
 The above 5x files would've been installed if you followed the Flexget installation instructions [HERE](https://github.com/ahuacate/proxmox-lxc-media/blob/master/README.md#60-flexget-lxc---ubuntu-1804). To download again go to the Proxmox web interface typhoon-01 > 114 (flexget) > >_ Shell and type the following:
 ```
 wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/config.yml -O /home/media/flexget/config.yml &&
-wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-showrss.yml.yml -O /home/media/flexget/list-showrss.yml.yml &&
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-showrss.yml.yml -O /home/media/flexget/list-showrss.yml &&
 wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-mvgroup.yml -O /home/media/flexget/list-mvgroup.yml &&
 wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-documentarytorrents.yml -O /home/media/flexget/list-documentarytorrents.yml &&
+wget -q https://raw.githubusercontent.com/ahuacate/flexget/master/list-reject.yml -O /home/media/flexget/list-reject.yml &&
 chown 1605:65605 /home/media/flexget/*.yml
 ```
 **Please note.** Downloading `secrets.yml` again will overwrite your previous copy. So if you've already entered your private credentials into the `secrets.yml` downloading again will result in them being overwritten - probably a time wasting experience.
