@@ -101,6 +101,7 @@ templates:
     series:
       include:
         - list-showrss.yml
+        - list-reject.yml
 
   feed-mvgroup:
     rss: 
@@ -111,6 +112,7 @@ templates:
     seen: local
     include:
       - list-mvgroup.yml
+      - list-reject.yml
       
   feed-documentarytorrents:
     rss: 
@@ -120,6 +122,7 @@ templates:
     seen: local
     include:
       - list-documentarytorrents.yml
+      - list-reject.yml
     
 tasks:
 
